@@ -1,0 +1,22 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "default",
+  "description": "Default WikiRabbit desktop permissions",
+  "windows": ["main"],
+  "permissions": [
+    "core:default",
+    "autostart:default",
+    "notification:default",
+    "opener:default",
+    "sql:default",
+    "sql:allow-execute",
+    {
+      "identifier": "http:default",
+      "allow": [
+        { "url": "https://en.wikipedia.org/*" },
+        { "url": "https://*.wikipedia.org/*" },
+        { "url": "https://*.wikimedia.org/*" }
+      ]
+    }
+  ]
+}
