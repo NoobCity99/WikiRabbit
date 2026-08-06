@@ -1,232 +1,134 @@
-<img width="2172" height="724" alt="RC_Banner" src="https://github.com/user-attachments/assets/9e5de699-6750-4778-82ef-6a901a5f44b6" />
+![Banner](assets\Banner_logo.png)
+# WikiRabbit
 
-**A structured way for non-coders to build software with AI coding agents.**
+WikiRabbit is a small Windows desktop app for following a daily Wikipedia rabbit hole.
 
-This repository accompanies my RailCoding instructional video and provides a lightweight starter template for your own AI-assisted software project.
+It runs from the Windows system tray, shows a daily or random Wikipedia article, offers two related article choices, and records the path as a visual branching tree.
 
-## What Is RailCoding?
+## Current Features
 
-RailCoding is a development process that puts clear rails around AI-generated code.
+- Windows desktop shell built with Tauri 2.
+- System tray menu with open, random article, settings, and quit actions.
+- Start-with-Windows setting.
+- Local Windows notifications.
+- Random Wikipedia article reader with title, description, image, extract, and Wikipedia link.
+- Binary article exploration with two related choices.
+- Persistent visual rabbit-hole tree using React Flow.
+- Local SQLite storage for settings, cached article metadata, daily delivery state, and exploration history.
 
-Instead of opening a coding agent and vaguely asking it to “make an app,” you first use a **GPT Project** to define:
+## Architecture Philosophy
 
-* What the application should do
-* What it should never do
-* Who it is being built for
-* Which features belong in the current build
-* How you will know when the work is successful
+WikiRabbit is intentionally local-first and simple. It is a demonstration app, not a production-scale platform.
 
-The coding agent still handles most of the technical implementation, but it works from a clearer plan and within defined boundaries.
+The project favors:
 
-## The Two-Agent Workflow
+- Clear boundaries over broad abstractions.
+- Tauri/Rust for native Windows behavior.
+- React/TypeScript for the user interface and product logic.
+- SQLite for small local persistence.
+- Public Wikipedia/Wikimedia APIs for article data.
+- Focused tests for filtering and scheduling logic instead of a large test suite.
 
-RailCoding separates planning from implementation.
+The frontend owns the main application flow: loading articles, building trails, rendering the reader, and transforming saved nodes into a React Flow tree. The Tauri layer stays thin and handles native desktop concerns such as tray behavior, notifications, autostart, window lifecycle, and plugin setup.
 
-### Your GPT Project: The Planning Room
-
-Create a dedicated GPT Project for your application and keep using the same project throughout development.
-
-Use it to:
-
-* Explore and refine your original idea
-* Define features, limitations, and user workflows
-* Create and revise `Vision.md`
-* Produce focused `BuildSpec.md` files
-* Review plans proposed by your coding agent
-* Discuss bugs, screenshots, test results, and future features
-* Translate technical agent responses into plain language
-
-The GPT Project maintains the broader context of what you are building and why.
-
-### Your Coding Agent: The Builder
-
-Use Codex or another repository-aware coding agent to work directly with the project files.
-
-The coding agent should:
-
-* Read the project documents before coding
-* Inspect the existing implementation
-* Propose a plan for substantial changes
-* Build within the approved scope
-* Run relevant tests and checks
-* Explain what changed
-* Provide manual testing instructions
-* Update the project logs
-
-A simple way to think about it:
-
-> **Your GPT Project helps design and supervise the application. Your coding agent builds it.**
-
-## The RailCoding Loop
-
-1. Discuss the idea inside your GPT Project.
-2. Define the lasting product philosophy in `dev/Vision.md`.
-3. Create a focused `dev/BuildSpec.md` for the current major build.
-4. Give the BuildSpec to your coding agent.
-5. Have the agent inspect the repository and propose a plan.
-6. Bring that plan back to your GPT Project for review.
-7. Approve or revise the plan.
-8. Have the coding agent implement one manageable phase.
-9. Run the automated and manual tests.
-10. Record the work and commit a known working version.
-11. Continue the same loop as the application develops.
-
-Small adjustments can usually be handled with a direct prompt.
-
-Large features, major refactors, or changes to stored data should receive a new BuildSpec.
-
-## What This Template Contains
+## Project Layout
 
 ```text
-RailCoding/
-├── agents.md
-├── ChangeLog.md
-├── latest.json
-├── .gitignore
-└── dev/
-    ├── Vision.md
-    ├── BuildSpec.md
-    └── ProjectLog.md
+WikiRabbit/
+├── src/                    # React + TypeScript app
+│   ├── components/          # UI views and reusable app components
+│   ├── services/            # Wikipedia, storage, scheduler, notification, tree logic
+│   ├── App.tsx              # Main app state and workflow wiring
+│   └── styles.css           # Desktop UI styling
+├── src-tauri/               # Tauri/Rust desktop shell
+│   ├── src/main.rs           # Tray, window, plugin, and native app setup
+│   ├── migrations/           # SQLite schema
+│   ├── capabilities/         # Tauri plugin permissions
+│   └── tauri.conf.json       # Tauri app and bundle config
+├── package.json              # npm scripts and frontend dependencies
+└── vite.config.ts            # Vite config
 ```
 
-### `agents.md`
+## Development Prerequisites
 
-Permanent instructions for the coding agent.
+Install these before running the app locally:
 
-These rules tell the agent to remain within scope, protect sensitive information, perform relevant testing, report failures honestly, and maintain the project logs.
+- Windows 10 or 11.
+- Node.js and npm.
+- Rust and Cargo.
+- Microsoft C++ Build Tools.
+- Microsoft Edge WebView2 Runtime.
 
-### `dev/Vision.md`
+The app also needs network access to Wikipedia and Wikimedia domains.
 
-The stable foundation of the application.
+## Run For Development
 
-Use it to describe:
+Install dependencies:
 
-* The purpose of the application
-* Intended users and use cases
-* Core product principles
-* What the application should do
-* What the application should never do
-
-Keep this file focused. It should not contain every possible future feature.
-
-### `dev/BuildSpec.md`
-
-The specification for the current major build.
-
-Create this through your GPT Project after discussing and refining the feature set.
-
-For the initial application, try to limit the BuildSpec to approximately three major phases:
-
-1. Build the core application, data structure, and interface shell.
-2. Complete the main user workflows.
-3. Add validation, testing, documentation, and deployment support.
-
-You may already have more ideas planned, but they do not all need to be handed to the coding agent at once.
-
-### `dev/ProjectLog.md`
-
-The internal development history.
-
-The coding agent updates this with meaningful technical changes, bug resolutions, planning decisions, testing results, and remaining work.
-
-This gives both you and your agents a useful reference outside the chat history.
-
-### `ChangeLog.md`
-
-A cleaner list of user-visible changes.
-
-Use it for:
-
-* New features
-* Changed behavior
-* Bug fixes
-* Deployment changes
-* Compatibility changes
-
-You can later copy relevant entries into your release notes.
-
-### `latest.json`
-
-An optional starting point for an application update checker.
-
-An application can compare its installed version against this small public file and notify the user when an update is available.
-
-It is not required for every project.
-
-## Getting Started
-
-### 1. Copy the template
-
-Use this repository as a template, clone it, or copy the files into a new project.
-
-### 2. Prepare the private development folder
-
-The `dev/` directory contains your internal planning documents.
-
-After copying the template, replace the instructions inside `.gitignore` with:
-
-```gitignore
-dev/
+```powershell
+npm install
 ```
 
-This allows the folder to remain available locally without publishing your internal plans to GitHub.
+Run the desktop app in development mode:
 
-Do not store passwords, API keys, private keys, personal information, or other secrets in these documents.
+```powershell
+npm run tauri dev
+```
 
-### 3. Create a GPT Project
+This starts Vite on `127.0.0.1:1420` and opens the Tauri desktop shell. Prefer this command over browser-only Vite because the app depends on Tauri plugins for SQLite, notifications, tray behavior, autostart, and HTTP access.
 
-Create a new GPT Project named after your application.
+Run the focused test suite:
 
-Begin with something similar to:
+```powershell
+npm test
+```
+
+Build the frontend:
+
+```powershell
+npm run build
+```
+
+Build the Windows desktop app and installers:
+
+```powershell
+npm run tauri build
+```
+
+Successful Tauri builds produce installer output under:
 
 ```text
-I want to develop this application using the RailCoding method.
-
-Help me define the intended users, core purpose, major features,
-non-goals, security boundaries, deployment environment, and what
-the application should never do.
-
-Challenge unclear or conflicting ideas. Do not write code yet.
-Once the foundation is clear, help me create Vision.md and a
-focused three-phase BuildSpec.md.
+src-tauri/target/release/bundle/
 ```
 
-Copy the completed documents into the corresponding files under `dev/`.
+## How To Use WikiRabbit
 
-### 4. Start the coding agent
+1. Launch WikiRabbit.
+2. Use `Today` to view the current daily article when one is available.
+3. Use `Start New Trail` or the tray menu's `Show Random Article` action to begin a rabbit-hole trail.
+4. Read the article preview, then choose one of the two related article cards.
+5. Continue choosing branches to grow the trail.
+6. Open `Current Trail` to pan, zoom, fit, and select articles in the visual tree.
+7. Use the bottom trail bar to jump back to articles on the active path.
+8. Use `Settings` to adjust daily notification time, start-with-Windows, notifications, and local cleanup options.
+9. Close the window to leave WikiRabbit running in the tray.
+10. Use the tray menu's `Quit` action when you want to fully exit the app.
 
-Open the repository with your coding agent and begin with:
+## Local Data
 
-```text
-Read agents.md, dev/Vision.md, and dev/BuildSpec.md.
+WikiRabbit stores app data locally in SQLite through the Tauri SQL plugin. Stored data includes settings, article metadata, daily delivery records, and exploration nodes.
 
-Inspect the repository before changing anything. Propose a practical
-implementation plan for the first phase, identify unclear requirements,
-and explain important technical decisions in novice-friendly language.
+The app does not use accounts, cloud sync, telemetry, private keys, or API tokens.
 
-Do not begin implementation until the plan is approved.
-```
+## Manual Validation Notes
 
-Take the resulting plan back to your GPT Project for review before proceeding.
+For visual or interactive changes, test the installed Windows app, not only the dev shell:
 
-## RailCoding Is Not Autopilot
+1. Confirm launch, close-to-tray, tray open, tray random article, settings, and quit behavior.
+2. Confirm random articles load with text and images when available.
+3. Follow several article choices and confirm the tree expands from the correct nodes.
+4. Restart the app and confirm the current article and trail are restored.
+5. Toggle start-with-Windows and confirm it persists.
+6. Send a test notification and click it.
 
-RailCoding does not guarantee that AI-generated code is correct, secure, or maintainable.
-
-You still need:
-
-* Git version control
-* Known working commits
-* Automated testing
-* Manual testing
-* Backups
-* Careful review of destructive or security-sensitive changes
-* Human judgment about whether the application behaves correctly
-
-You do not need to understand every line of code.
-
-You do need to understand what is being changed, why it is being changed, how it was tested, and how to recover if it fails.
-
-## The Core Principle
-
-> **Plan with context. Build within boundaries. Test every meaningful change. Keep a recoverable history.**
+Windows notification click behavior can differ between development and packaged builds, so validate notification activation from an installed MSI or NSIS build before treating it as complete.
