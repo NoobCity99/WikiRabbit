@@ -37,6 +37,10 @@ Known follow-up risks:
 
 ## Bug Fixes (with technical descriptions of issue & resoultion)
 
+### 2026-08-08 - README banner rendering fix
+
+* Corrected the README banner image reference to use a GitHub-compatible forward-slash relative path: `assets/Banner_logo.png`.
+
 ### 2026-08-02 - Tauri scaffold verification fixes
 
 * Removed an unnecessary Rust library target from `src-tauri/Cargo.toml` because the first version uses a binary `main.rs` entrypoint.

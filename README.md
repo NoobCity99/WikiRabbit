@@ -1,4 +1,5 @@
-![Banner](assets\Banner_logo.png)
+![WikiRabbit banner](assets/Banner_logo.png)
+
 # WikiRabbit
 
 WikiRabbit is a small Windows desktop app for following a daily Wikipedia rabbit hole.
